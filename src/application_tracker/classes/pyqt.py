@@ -3,7 +3,6 @@ from datetime import datetime
 
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QApplication, QMainWindow
-from pyqtgraph.dockarea import *
 
 from src.application_tracker.classes.application import ApplicationStatus, Application
 
@@ -239,13 +238,6 @@ class LoginPopup(QtWidgets.QWidget):
         res = self.loop.exec()
         self.hide()
         return res
-
-
-class DockArea(DockArea):
-    def makeContainer(self, typ):
-        new = super(DockArea, self).makeContainer(typ)
-        new.setChildrenCollapsible(False)
-        return new
 
 
 class MainWindow(QMainWindow):
