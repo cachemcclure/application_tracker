@@ -1,5 +1,6 @@
 import sys
 from datetime import datetime
+import webbrowser
 
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QApplication, QMainWindow
@@ -255,7 +256,14 @@ class MainWindow(QMainWindow):
 
         # Add Table
         self.table = QtWidgets.QTableView()
+        self.table.doubleClicked.connect(self.open_link)
         self.update_table_model()
+
+        # Status Message
+        self.ret_label = QtWidgets.QLabel(self)
+        self.ret_label.setText('Welcome!')
+        self.ret_label.setFixedHeight(30)
+        self.ret_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         # Buttons
         # Add Application
@@ -280,11 +288,17 @@ class MainWindow(QMainWindow):
 
         # Formatting Dock Area
         layout.addWidget(self.table)
+        layout.addWidget(self.ret_label)
         layout.addWidget(self.add_app)
         layout.addWidget(self.up_app)
         layout.addWidget(self.del_app)
         layout.addWidget(self.exit_b)
         self.setGeometry(100, 100, 900, 600)
+
+    def open_link(self, item):
+        value = self.table.currentIndex().data()
+        if value.startswith("http://") or value.startswith("https://"):
+            webbrowser.open(value)
 
     def update_table_model(self):
         self.model = ApplicationModel([app.as_dict() for app in self.applications.values()])
@@ -292,19 +306,28 @@ class MainWindow(QMainWindow):
 
     def add_application(self):
         self.show_dialog(update=False)
+        self.ret_label.setText("Application Added")
 
     def update_application(self):
-        row_index = self.table.currentIndex().siblingAtColumn(0)
-        internal_app_id = row_index.data()
-        temp_app = self.applications[internal_app_id]
-        self.show_dialog(application=temp_app,update=True)
+        try:
+            row_index = self.table.currentIndex().siblingAtColumn(0)
+            internal_app_id = row_index.data()
+            temp_app = self.applications[internal_app_id]
+            self.show_dialog(application=temp_app, update=True)
+            self.ret_label.setText("Application Updated")
+        except Exception as err:
+            self.ret_label.setText("No Application Selected")
 
     def delete_application(self):
-        row_index = self.table.currentIndex().siblingAtColumn(0)
-        internal_app_id = row_index.data()
-        del self.applications[internal_app_id]
-        Application().save_applications(applications=self.applications)
-        self.update_table_model()
+        try:
+            row_index = self.table.currentIndex().siblingAtColumn(0)
+            internal_app_id = row_index.data()
+            del self.applications[internal_app_id]
+            Application().save_applications(applications=self.applications)
+            self.update_table_model()
+            self.ret_label.setText("Application Deleted")
+        except Exception as err:
+            self.ret_label.setText("No Application Selected")
 
     def show_dialog(self, application: Application = Application(), update: bool = False):
         dialog = LoginPopup(self, application=application, update=update)
