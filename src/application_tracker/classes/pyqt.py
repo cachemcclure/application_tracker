@@ -4,7 +4,7 @@ from datetime import datetime
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
-from src.application_tracker.classes.application import ApplicationStatus, Application
+from application_tracker.classes.application import ApplicationStatus, Application
 
 
 class ApplicationModel(QtCore.QAbstractTableModel):

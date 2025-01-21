@@ -2,8 +2,8 @@ import datetime
 from enum import Enum
 from uuid import uuid4
 
-from src.application_tracker.constants.application_constants import APPLICATIONS_PATH
-from src.application_tracker.utils.io_utils import read_pkl_file, dump_pkl_file
+from application_tracker.constants.application_constants import APPLICATIONS_PATH
+from application_tracker.utils.io_utils import read_pkl_file, dump_pkl_file
 
 
 class ApplicationStatus(Enum):
